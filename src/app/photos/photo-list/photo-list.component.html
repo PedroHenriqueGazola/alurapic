@@ -10,8 +10,7 @@
     </form>
 </div> 
 
-{{filter}}
 
 <app-photos
- [photos] = "photos"
+ [photos] = "photos | filterByDescription: filter"
 ></app-photos>

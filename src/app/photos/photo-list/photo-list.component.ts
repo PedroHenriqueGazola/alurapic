@@ -10,6 +10,7 @@ import { PhotoService } from '../photo/photo.service';
 })
 export class PhotoListComponent {
 
+  filter: string = ''
   photos: Photo[] = [];
 
   constructor (

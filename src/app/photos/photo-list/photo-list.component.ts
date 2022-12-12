@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { debounceTime, Subject } from 'rxjs';
 import { Photo } from '../photo/photo';
 import { PhotoService } from '../photo/photo.service';
 
@@ -12,6 +13,7 @@ export class PhotoListComponent {
 
   filter: string = ''
   photos: Photo[] = [];
+  debounce: Subject<string> = new Subject<string>()
 
   constructor (
     private activatedRoute: ActivatedRoute
@@ -19,6 +21,11 @@ export class PhotoListComponent {
 
   ngOnInit(): void {
     this.photos = this.activatedRoute.snapshot.data['photos']
-    console.log(this.photos)
+
+    this.debounce.pipe(debounceTime(300)).subscribe(filter => this.filter = filter)
+  }
+
+  ngOnDestroy(): void {
+    this.debounce.unsubscribe()
   }
 }

@@ -14,14 +14,11 @@ export class PhotoListComponent {
   photos: Photo[] = [];
 
   constructor (
-    private photoService: PhotoService,
     private activatedRoute: ActivatedRoute
     ) { }
 
   ngOnInit(): void {
-    const username = this.activatedRoute.snapshot.params['username']
-    this.photoService.listFromUser(username).subscribe(photo => {
-      this.photos = photo
-    })
+    this.photos = this.activatedRoute.snapshot.data['photos']
+    console.log(this.photos)
   }
 }

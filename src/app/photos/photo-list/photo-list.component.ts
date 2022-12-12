@@ -14,12 +14,17 @@ export class PhotoListComponent {
   filter: string = ''
   photos: Photo[] = [];
   debounce: Subject<string> = new Subject<string>()
-
+  hasMore: boolean = true
+  currentPage: number = 1
+  username: string = ''
   constructor (
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private photoService: PhotoService
     ) { }
 
   ngOnInit(): void {
+    this.username = this.activatedRoute.snapshot.params['username']
+
     this.photos = this.activatedRoute.snapshot.data['photos']
 
     this.debounce.pipe(debounceTime(300)).subscribe(filter => this.filter = filter)
@@ -27,5 +32,14 @@ export class PhotoListComponent {
 
   ngOnDestroy(): void {
     this.debounce.unsubscribe()
+  }
+
+  load() {
+    this.photoService
+      .listFromUserPaginated(this.username, ++this.currentPage)
+      .subscribe(photos => {
+        this.photos = this.photos.concat(photos)
+        if(!photos.length) this.hasMore = false
+      })
   }
 }
